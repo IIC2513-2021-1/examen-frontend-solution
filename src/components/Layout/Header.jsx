@@ -1,5 +1,7 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faRocket } from '@fortawesome/free-solid-svg-icons';
 import jwtDecode from 'jwt-decode';
 import useAuth from '../../hooks/useAuth';
 
@@ -12,9 +14,12 @@ function Header() {
 
   return (
     <header className="app-header">
-      <div className="brand">
-        <Link to="/"><h1>Examen IIC2513 2021-1</h1></Link>
-      </div>
+      <Link className="brand" to="/">
+        <div>
+          <FontAwesomeIcon icon={faRocket} />
+          <h1>Examen IIC2513 2021-1</h1>
+        </div>
+      </Link>
       {currentUser && (
         <ul>
           <li>{userEmail}</li>

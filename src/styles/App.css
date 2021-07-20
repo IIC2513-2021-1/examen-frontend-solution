@@ -32,18 +32,17 @@
 }
 
 .app-header .brand {
-  display: flex;
-  align-items: center;
-}
-
-.app-header .brand a {
   text-decoration: none;
   color: white;
 }
 
-.app-header .brand img {
-  width: 50px;
-  height: auto;
+.app-header .brand > div {
+  display: flex;
+  align-items: center;
+}
+
+.app-header .brand svg {
+  font-size: 1.5rem;
   padding-right: 10px;
 }
 
@@ -101,6 +100,34 @@
   cursor: auto;
 }
 
+.loading {
+  animation: fa-spin 1.5s linear infinite;
+}
+
+.loading-sm {
+  font-size: 2rem;
+}
+
+.loading-lg {
+  font-size: 3rem;
+}
+
+.companies ul {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.companies ul li {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  min-height: 75vh;
+}
+
 @media screen and (min-width: 501px) {
   .app-header h1 {
     font-size: 1.2rem;
@@ -116,6 +143,14 @@
 
   .login-container {
     width: 80%;
+  }
+
+  .companies ul {
+    flex-direction: row;
+  }
+
+  .companies ul li {
+    width: 50%;
   }
 }
 
