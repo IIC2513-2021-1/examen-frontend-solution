@@ -2,6 +2,7 @@ import React from 'react';
 import {
   Redirect, Route, Switch, useLocation,
 } from 'react-router-dom';
+import Layout from './components/Layout';
 import AuthContextProvider from './contexts/AuthContextProvider';
 import useAuth from './hooks/useAuth';
 import Companies from './views/Companies';
@@ -24,15 +25,17 @@ function Routes() {
   }
 
   return (
-    <Switch>
-      <Redirect
-        from="/login"
-        to={location.state?.referrer || '/'}
-      />
-      <Route exact path="/" component={Companies} />
-      <Route exact path="/companies/:id" component={CompanyDetail} />
-      <Route component={NotFound} />
-    </Switch>
+    <Layout>
+      <Switch>
+        <Redirect
+          from="/login"
+          to={location.state?.referrer || '/'}
+        />
+        <Route exact path="/" component={Companies} />
+        <Route exact path="/companies/:id" component={CompanyDetail} />
+        <Route component={NotFound} />
+      </Switch>
+    </Layout>
   );
 }
 
