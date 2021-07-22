@@ -4,7 +4,7 @@ import { Deserializer } from 'jsonapi-serializer';
 import companiesApi from '../api/companies';
 import Loading from '../components/Loading';
 import useAuth from '../hooks/useAuth';
-import CompanyCard from './CompanyCard';
+import CompanyCard from '../components/Companies/Card';
 
 export default function Companies() {
   const [companies, setCompanies] = useState([]);

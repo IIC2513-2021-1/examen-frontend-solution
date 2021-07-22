@@ -26,8 +26,13 @@ function getCompanyMilestones(id, token) {
   return getResource(`${config.apiUrl}/api/companies/${id}/milestones`, token);
 }
 
+function getCompanyStats(id, token) {
+  return getResource(`${config.apiUrl}/api/companies/${id}/stats`, token);
+}
+
 export default {
   getCompanies,
   getCompany,
   getCompanyMilestones,
+  getCompanyStats,
 };

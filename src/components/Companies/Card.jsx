@@ -4,15 +4,17 @@ import { Link } from 'react-router-dom';
 import format from 'date-fns/format';
 import parseISO from 'date-fns/parseISO';
 import { Deserializer } from 'jsonapi-serializer';
-import companiesApi from '../api/companies';
-import Loading from '../components/Loading';
-import useAuth from '../hooks/useAuth';
+import companiesApi from '../../api/companies';
+import useAuth from '../../hooks/useAuth';
+import useOption from '../../hooks/useOption';
+import Loading from '../Loading';
 
 export default function CompanyCard({ company }) {
   const [companyResource, setCompanyResource] = useState({});
   const [loading, setLoading] = useState(false);
   const { currentUser: { access_token: accessToken } } = useAuth();
-  const { summary } = companyResource;
+  const { option } = useOption();
+  const { summary, summaryStats } = companyResource;
 
   useEffect(() => {
     setLoading(true);
@@ -46,9 +48,36 @@ export default function CompanyCard({ company }) {
         </div>
       ) : (
         <section className="company-summary-content">
-          <h3>{summary?.title}</h3>
-          <span>{summary && format(parseISO(summary.happenedAt), 'PPP')}</span>
-          <p>{summary?.excerpt}</p>
+          {option === 'milestones' ? (
+            <>
+              <h3>{summary?.title}</h3>
+              <span>{summary && format(parseISO(summary.happenedAt), 'PPP')}</span>
+              <p>{summary?.excerpt}</p>
+            </>
+          ) : (
+            <ul className="company-summary-stats">
+              <li>
+                <strong>Fecha primer vuelto tripulado</strong>
+                :
+                {' '}
+                {summaryStats && format(parseISO(summaryStats.crewedFlightOn), 'PPP')}
+              </li>
+              <li>
+                <strong>Tipo de vehículo</strong>
+                :
+                {' '}
+                {summaryStats?.vehicleType}
+              </li>
+              <li>
+                <strong>Altura máxima</strong>
+                :
+                {' '}
+                {summaryStats?.maxAltitude}
+                {' '}
+                kms
+              </li>
+            </ul>
+          )}
           <div className="company-btn">
             <Link to={`companies/${company.id}`}>Ver detalles</Link>
           </div>

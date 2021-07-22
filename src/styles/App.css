@@ -112,7 +112,7 @@
   font-size: 4rem;
 }
 
-.companies ul {
+.companies > ul {
   display: flex;
   flex-direction: column;
   list-style: none;
@@ -120,7 +120,7 @@
   padding: 0;
 }
 
-.companies ul li {
+.companies > ul > li {
   min-height: 65vh;
   display: flex;
   flex-direction: column;
@@ -181,6 +181,16 @@ body {
 
 .company-summary-content p {
   font-size: 0.9rem;
+}
+
+.company-summary-stats {
+  margin: 20px 0;
+  list-style-type: disc;
+}
+
+.company-summary-stats > li {
+  padding: 10px 0;
+  text-align: left;
 }
 
 .company-btn {
@@ -258,6 +268,30 @@ body {
   margin-bottom: 0;
 }
 
+.company-stats {
+  margin: 30px 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 40px;
+}
+
+.single-stat {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.single-stat svg {
+  font-size: 2rem;
+}
+
+.single-stat h3 {
+  margin: 10px 0;
+}
+
 .input-error {
   border: 1px solid indianred;
 }
@@ -304,11 +338,11 @@ body {
     width: 80%;
   }
 
-  .companies ul {
+  .companies > ul {
     flex-direction: row;
   }
 
-  .companies ul li {
+  .companies > ul > li {
     width: 50%;
   }
 }
@@ -318,7 +352,7 @@ body {
     width: 50%;
   }
 
-  .companies ul li {
+  .companies > ul > li {
     min-height: 75vh;
   }
 
@@ -337,5 +371,10 @@ body {
 
   .company-milestones ul {
     padding: 0 5%;
+  }
+
+  .company-stats {
+    padding: 0 5%;
+    grid-template-columns: repeat(4, 1fr);
   }
 }

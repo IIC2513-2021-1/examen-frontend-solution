@@ -7,7 +7,9 @@ import { Deserializer } from 'jsonapi-serializer';
 import companiesApi from '../api/companies';
 import Loading from '../components/Loading';
 import useAuth from '../hooks/useAuth';
-import CompanyMilestone from './CompanyMilestone';
+import useOption from '../hooks/useOption';
+import CompanyMilestone from '../components/Companies/Milestone';
+import CompanyStats from '../components/Companies/Stats';
 
 export default function Companies() {
   const { id } = useParams();
@@ -15,7 +17,10 @@ export default function Companies() {
   const [loading, setLoading] = useState(false);
   const [milestones, setMilestones] = useState([]);
   const [loadingMilestones, setLoadingMilestones] = useState(false);
+  const [stats, setStats] = useState({});
+  const [loadingStats, setLoadingStats] = useState(false);
   const { currentUser: { access_token: accessToken } } = useAuth();
+  const { option } = useOption();
 
   useEffect(() => {
     setLoading(true);
@@ -30,16 +35,27 @@ export default function Companies() {
 
   useEffect(() => {
     if (Object.keys(company).length > 0) {
-      setLoadingMilestones(true);
-      companiesApi.getCompanyMilestones(id, accessToken)
-        .then((data) => {
-          new Deserializer({ keyForAttribute: 'camelCase' })
-            .deserialize(data, (_error, dataArray) => setMilestones(dataArray));
-        })
-        .catch((error) => console.log(error)) // Optional since it was not requested in the exam
-        .finally(() => setLoadingMilestones(false));
+      if (option === 'milestones') {
+        setLoadingMilestones(true);
+        companiesApi.getCompanyMilestones(id, accessToken)
+          .then((data) => {
+            new Deserializer({ keyForAttribute: 'camelCase' })
+              .deserialize(data, (_error, dataArray) => setMilestones(dataArray));
+          })
+          .catch((error) => console.log(error)) // Optional since it was not requested in the exam
+          .finally(() => setLoadingMilestones(false));
+      } else {
+        setLoadingStats(true);
+        companiesApi.getCompanyStats(id, accessToken)
+          .then((data) => {
+            new Deserializer({ keyForAttribute: 'camelCase' })
+              .deserialize(data, (_error, statsData) => setStats(statsData));
+          })
+          .catch((error) => console.log(error)) // Optional since it was not requested in the exam
+          .finally(() => setLoadingStats(false));
+      }
     }
-  }, [accessToken, company, id]);
+  }, [accessToken, company, id, option]);
 
   return (
     <div className="company-detail">
@@ -63,19 +79,30 @@ export default function Companies() {
             </section>
             <img className="company-extended-item" src={company.imageUrl} alt={`${company.name} ship`} />
           </div>
-          <div className="company-milestones">
-            {loadingMilestones ? (
+          {option === 'milestones' && (
+            <div className="company-milestones">
+              {loadingMilestones ? (
+                <div className="loading-sm-container">
+                  <Loading />
+                </div>
+              ) : (
+                <ul>
+                  {milestones.map((milestone) => (
+                    <CompanyMilestone key={milestone.id} milestone={milestone} />
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
+          {option === 'stats' && (
+            loadingStats ? (
               <div className="loading-sm-container">
                 <Loading />
               </div>
             ) : (
-              <ul>
-                {milestones.map((milestone) => (
-                  <CompanyMilestone key={milestone.id} milestone={milestone} />
-                ))}
-              </ul>
-            )}
-          </div>
+              <CompanyStats stats={stats} />
+            )
+          )}
         </>
       )}
     </div>

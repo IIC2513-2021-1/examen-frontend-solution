@@ -4,6 +4,7 @@ import {
 } from 'react-router-dom';
 import Layout from './components/Layout';
 import AuthContextProvider from './contexts/AuthContextProvider';
+import OptionContextProvider from './contexts/OptionContextProvider';
 import useAuth from './hooks/useAuth';
 import Companies from './views/Companies';
 import CompanyDetail from './views/CompanyDetail';
@@ -42,7 +43,9 @@ function Routes() {
 export default function RoutesWrapper() {
   return (
     <AuthContextProvider>
-      <Routes />
+      <OptionContextProvider>
+        <Routes />
+      </OptionContextProvider>
     </AuthContextProvider>
   );
 }
