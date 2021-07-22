@@ -1,35 +1,44 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
+/* eslint-disable jsx-a11y/label-has-associated-control, react/jsx-props-no-spreading */
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
+import { Formik, useField } from 'formik';
+import * as Yup from 'yup';
 import authApi from '../api/auth';
 import useAuth from '../hooks/useAuth';
 
+const loginValidationSchema = Yup.object({
+  email: Yup.string()
+    .email('Invalid email address')
+    .required('Required'),
+  password: Yup.string()
+    .required('Required'),
+});
+
+const Input = ({ label, ...props }) => {
+  const [field, { error, touched }] = useField(props);
+  const { id, name } = props;
+  return (
+    <div className="field">
+      <label htmlFor={id || name}>{label}</label>
+      <input className={touched && error ? 'input-error' : ''} {...field} {...props} />
+      {touched && error && (
+        <div className="field-error">{error}</div>
+      )}
+    </div>
+  );
+};
+
 function Login() {
-  const [payload, setPayload] = useState({
-    email: '',
-    password: '',
-  });
-  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState();
   const { currentUser, handleUserLogin } = useAuth();
 
-  const handleChange = (event) => {
-    setPayload((prevPayload) => ({
-      ...prevPayload,
-      [event.target.name]: event.target.value,
-    }));
-  };
-
-  const handleSubmit = async (event) => {
-    const { email, password } = payload;
-    event.preventDefault();
-    setLoading(true);
+  const onSubmit = async (values) => {
+    const { email, password } = values;
     try {
       const user = await authApi.login(email, password);
       handleUserLogin(user);
-    } catch (error) {
-      console.log(error.message); // eslint-disable-line no-console
-    } finally {
-      setLoading(false);
+    } catch (err) {
+      setError(err.message);
     }
   };
 
@@ -39,31 +48,27 @@ function Login() {
     <div className="login-wrapper">
       <div className="login-container">
         <h1>Login Examen</h1>
-        <form onSubmit={handleSubmit}>
-          <div className="field">
-            <label htmlFor="email">E-mail</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              onChange={handleChange}
-              value={payload.email}
-            />
-          </div>
-          <div className="field">
-            <label htmlFor="password">Contraseña</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              onChange={handleChange}
-              value={payload.password}
-            />
-          </div>
-          <div className="actions">
-            <button disabled={loading} type="submit">Ingresar</button>
-          </div>
-        </form>
+        {error && (
+          <div className="form-error">{error}</div>
+        )}
+        <Formik
+          initialValues={{
+            email: '',
+            password: '',
+          }}
+          onSubmit={onSubmit}
+          validationSchema={loginValidationSchema}
+        >
+          {({ handleSubmit, isSubmitting, isValid }) => (
+            <form onSubmit={handleSubmit}>
+              <Input label="E-mail" name="email" id="email" type="email" />
+              <Input label="Contraseña" name="password" id="password" type="password" />
+              <div className="actions">
+                <button disabled={isSubmitting || !isValid} type="submit">Ingresar</button>
+              </div>
+            </form>
+          )}
+        </Formik>
       </div>
     </div>
   );
